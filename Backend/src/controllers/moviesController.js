@@ -1,18 +1,6 @@
-const axios = require("axios");
+const tmdb = require('../services/tmdbClient');
 
-const getPopularMovies = async(req, res) => {
-    try {
-        const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
-            params: {
-                api_key: process.env.TMDB_API_KEY,
-                language: "pt-BR",
-                page: 1
-            }
-        });
-        res.json(response.data.results);
-    } catch (error) {
-        res.status(500).json({error: "Failed to fetch popular movies. " });
-    }
+exports.getPopularMovies = async (req, res) => {
+  const { data } = await tmdb.get('/movie/popular', { params: { page: 1 } });
+  res.json(data.results);
 };
-
-module.exports = {getPopularMovies}
