@@ -16,7 +16,7 @@ app.use("/api/movies", moviesRoutes);
 const AppError = require('./utils/AppError');
 app.use((err, req, res, _next) => {
   if (!(err instanceof AppError)) {
-    err = new AppError('Internal Server Error');
+    err = new AppError('Internal Server Error - ' + err.message);
   }
 
   console.error(`[${err.statusCode}] ${err.message}`);
