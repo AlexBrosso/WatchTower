@@ -4,6 +4,7 @@ require("dotenv").config();
 
 
 const moviesRoutes = require("./routes/movies");
+const genresRoutes = require("./routes/genres");
 const errorMiddleware = require('./middlewares/error.middleware');
 
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/movies", moviesRoutes);
+app.use("/api/genres", genresRoutes);
 
 app.use(errorMiddleware);
 

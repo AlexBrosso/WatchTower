@@ -10,7 +10,14 @@ const getPopularMovies = async (req, res) => {
       page: page || 1 
     } 
   });
-  res.json(data.results);
+
+  res.json({
+    page: data.page,
+    total_pages: data.total_pages,
+    total_results: data.total_results,
+    results: data.results
+  });
+
 };
 
 const getUpcomingMovies = async (req, res) => {
@@ -22,7 +29,14 @@ const getUpcomingMovies = async (req, res) => {
       page: page || 1 
     } 
   });
-  res.json(data);
+
+  res.json({
+    page: data.page,
+    total_pages: data.total_pages,
+    total_results: data.total_results,
+    results: data.results
+  });
+
 };
 
 const getMovieDetails = async (req, res) => {
@@ -45,7 +59,13 @@ const getMoviesSearchField = async (req, res) => {
     }
   });
 
-  res.json(data);
+  res.json({
+    page: data.page,
+    total_pages: data.total_pages,
+    total_results: data.total_results,
+    results: data.results
+  });
+
 };
 
 const getRecommendedMovies = async (req, res) => {
@@ -59,7 +79,13 @@ const getRecommendedMovies = async (req, res) => {
     } 
   });
 
-  res.json(data);
+  res.json({
+    page: data.page,
+    total_pages: data.total_pages,
+    total_results: data.total_results,
+    results: data.results
+  });
+
 };
 
 const getTrendingMovies = async (req, res) => {
@@ -71,7 +97,25 @@ const getTrendingMovies = async (req, res) => {
     } 
   });
 
+  res.json({
+    page: 1,
+    total_pages: 1,
+    total_results: data.results.length,
+    results: data.results
+  });
+  
+};
+
+const getMovieCredits = async (req, res) => {
+  const movieId = req.params.id;
+
+  const { data } = await tmdb.get(`/movie/${movieId}/credits`, { 
+    params: { 
+      language: "pt-BR",
+    } 
+  });
+
   res.json(data);
 };
 
-module.exports = {getPopularMovies, getUpcomingMovies, getMovieDetails, getMoviesSearchField, getRecommendedMovies, getTrendingMovies}
+module.exports = {getPopularMovies, getUpcomingMovies, getMovieDetails, getMoviesSearchField, getRecommendedMovies, getTrendingMovies, getMovieCredits}
