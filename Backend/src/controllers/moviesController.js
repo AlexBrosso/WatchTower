@@ -27,7 +27,6 @@ const getUpcomingMovies = async (req, res) => {
 
 const getMovieDetails = async (req, res) => {
     const movieId = req.params.id;
-    if (!/^\d+$/.test(movieId)) throw new AppError('Invalid movie ID format', 400)
 
     const { data } = await tmdb.get(`/movie/${movieId}`, { params: { language: "pt-BR" } });
     res.json(data);
@@ -52,7 +51,6 @@ const getMoviesSearchField = async (req, res) => {
 const getRecommendedMovies = async (req, res) => {
   const movieId = req.params.id;
   const { page } = req.query;
-  if (!/^\d+$/.test(movieId)) throw new AppError('Invalid movie ID format', 400)
 
   const { data } = await tmdb.get(`/movie/${movieId}/recommendations`, { 
     params: { 
@@ -66,8 +64,6 @@ const getRecommendedMovies = async (req, res) => {
 
 const getTrendingMovies = async (req, res) => {
   const timeWindow = req.params.timeWindow;
-
-  if (!['day', 'week'].includes(timeWindow)) { throw new AppError('Parameter "timeWindow" is in incorrect format', 400); }
 
   const { data } = await tmdb.get(`/trending/movie/${timeWindow}`, { 
     params: { 

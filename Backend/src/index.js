@@ -4,6 +4,7 @@ require("dotenv").config();
 
 
 const moviesRoutes = require("./routes/movies");
+const errorMiddleware = require('./middlewares/error.middleware');
 
 
 const app = express();
@@ -12,17 +13,7 @@ app.use(express.json());
 
 app.use("/api/movies", moviesRoutes);
 
-
-const AppError = require('./utils/AppError');
-app.use((err, req, res, _next) => {
-  if (!(err instanceof AppError)) {
-    err = new AppError('Internal Server Error - ' + err.message);
-  }
-
-  console.error(`[${err.statusCode}] ${err.message}`);
-
-  res.status(err.statusCode).json({ error: err.message });
-});
+app.use(errorMiddleware);
 
 
 const PORT = process.env.PORT || 3000;
