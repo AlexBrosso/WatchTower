@@ -1,13 +1,30 @@
-const redis = require("../services/redisClient");
+const { getRedisClient } = require("../services/redisClient");
 
-async function setCache(key, data, ttlSeconds = 60) {
-    const value = JSON.stringify(data);
-    await redis.set(key, value, { EX: ttlSeconds });
+async function setCache(key, value, ttlSeconds) {
+  const redis = await getRedisClient();
+  if (!redis){
+       console.warn(`SET Cache for key: ${key} without Redis Service`);
+       return null;
+  }
+
+  await redis.set(key, JSON.stringify(value), { EX: ttlSeconds });
+  console.log(`Cache SET: ${key} TTL: ${ttlSeconds}s`);
 }
 
-async function getCache(key){
-    const value = await redis.get(key);
-    return value ? JSON.parse(value) : null;
+async function getCache(key) {
+  const redis = await getRedisClient();
+  if (!redis){
+       console.warn(`GET Cache for key: ${key} without Redis Service`);
+       return null;
+  }
+
+  const value = await redis.get(key);
+  if (value) {
+    console.log(`Cache HIT: ${key}`);
+    return JSON.parse(value);
+  }
+  console.log(`Cache MISS: ${key}`);
+  return null;
 }
 
 function secondsUntilTomorrow(){

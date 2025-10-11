@@ -5,10 +5,7 @@ const getGenres = async (req, res) => {
     const cacheKey = "genres"
 
     const cached = await getCache(cacheKey);
-    if(cached){
-        console.log(`Cache HIT: ${cacheKey}`);
-        return res.json(cached);
-    };
+    if(cached) return res.json(cached);
 
     const { data } = await tmdb.get("/genre/movie/list", {
         params: {
@@ -20,7 +17,6 @@ const getGenres = async (req, res) => {
     data.genres.forEach(item => { genreMap[item.id] = item.name });
 
     setCache(cacheKey, genreMap, secondsUntilTomorrow());
-    console.log(`Cache MISS: ${cacheKey}`);
     res.json(genreMap)
 }
 

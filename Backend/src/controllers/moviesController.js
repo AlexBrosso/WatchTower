@@ -6,10 +6,7 @@ const getPopularMovies = async (req, res) => {
   const cacheKey = `popular_page_${page || 1}`;
   
   const cached = await getCache(cacheKey);
-  if(cached){
-    console.log(`Cache HIT: ${cacheKey}`);
-    return res.json(cached);
-  };
+  if(cached) return res.json(cached);
 
   const { data } = await tmdb.get("/movie/popular", { 
     params: { 
@@ -26,7 +23,6 @@ const getPopularMovies = async (req, res) => {
   };
 
   await setCache(cacheKey, result, secondsUntilTomorrow());
-  console.log(`Cache MISS: ${cacheKey}`);
   res.json(result);
 
 };
@@ -36,10 +32,7 @@ const getUpcomingMovies = async (req, res) => {
   const cacheKey = `upcoming_page_${page || 1}`;
   
   const cached = await getCache(cacheKey);
-  if(cached){
-    console.log(`Cache HIT: ${cacheKey}`);
-    return res.json(cached);
-  };
+  if(cached) return res.json(cached);
 
   const { data } = await tmdb.get("/movie/upcoming", { 
     params: { 
@@ -56,7 +49,6 @@ const getUpcomingMovies = async (req, res) => {
   };
 
   await setCache(cacheKey, result, secondsUntilTomorrow());
-  console.log(`Cache MISS: ${cacheKey}`);
   res.json(result);
 
 };
@@ -115,10 +107,7 @@ const getTrendingMovies = async (req, res) => {
   const cacheKey = `trending_timeWindow_${timeWindow}`;
 
   const cached = await getCache(cacheKey);
-  if (cached) {
-    console.log(`Cache HIT: ${cacheKey}`);
-    return res.json(cached);
-  };
+  if (cached) return res.json(cached);
 
   const { data } = await tmdb.get(`/trending/movie/${timeWindow}`, { 
     params: { 
@@ -134,7 +123,6 @@ const getTrendingMovies = async (req, res) => {
   };
 
   await setCache(cacheKey, result, timeWindow == "day" ? secondsUntilTomorrow() : secondsUntilNextSunday());
-  console.log(`Cache MISS: ${cacheKey}`);
   res.json(result);
   
 };

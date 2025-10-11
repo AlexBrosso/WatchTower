@@ -2,11 +2,10 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-
+const { createRedisClient } = require("./services/redisClient");
 const moviesRoutes = require("./routes/movies");
 const genresRoutes = require("./routes/genres");
 const errorMiddleware = require('./middlewares/error.middleware');
-
 
 const app = express();
 app.use(cors());
@@ -19,3 +18,11 @@ app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server Running on Port ${PORT}`));
+
+(async () => {
+    try {
+        await createRedisClient();
+    } catch (err) {
+        console.warn("Redis initialization failed — continuing without cache.");
+    }
+})();
