@@ -3,8 +3,9 @@ const cors = require("cors");
 require("dotenv").config();
 
 const { createRedisClient } = require("./services/redisClient");
-const moviesRoutes = require("./routes/movies");
-const genresRoutes = require("./routes/genres");
+const moviesRoutes = require("./routes/movie.route");
+const genresRoutes = require("./routes/genre.route");
+const usersRoutes = require("./routes/database/user.route");
 const errorMiddleware = require('./middlewares/error.middleware');
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/movies", moviesRoutes);
 app.use("/api/genres", genresRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use(errorMiddleware);
 

@@ -1,5 +1,5 @@
 const tmdb = require("../services/tmdbClient");
-const { getCache, setCache, secondsUntilTomorrow } = require("../utils/cache");
+const { getCache, setCache, secondsUntilTomorrow } = require("../lib/cache");
 
 const getGenres = async (req, res) => {
     const cacheKey = "genres"

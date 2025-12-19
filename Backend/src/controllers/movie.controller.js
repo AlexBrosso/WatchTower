@@ -1,5 +1,5 @@
 const tmdb = require("../services/tmdbClient");
-const { getCache, setCache, secondsUntilTomorrow, secondsUntilNextSunday } = require("../utils/cache")
+const { getCache, setCache, secondsUntilTomorrow, secondsUntilNextSunday } = require("../lib/cache")
 
 const getPopularMovies = async (req, res) => {
   const { page } = req.query;
