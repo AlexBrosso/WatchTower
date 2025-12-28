@@ -1,5 +1,7 @@
 const userRepository = require("../../repositories/user.repository")
 const AppError = require("../../utils/AppError")
+const bcrypt = require("bcrypt")
+const SALT_ROUNDS = 10;
 
 class UserService {
     async getUsers() {
@@ -22,7 +24,7 @@ class UserService {
             throw new AppError("Username is already being used.", 409);
         }
 
-        const passwordHash = data.password; // temporary
+        const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
 
         return userRepository.create({
             email: data.email,
@@ -61,10 +63,71 @@ class UserService {
         const user = await userRepository.findById(userId);
 
         if (!user)
-            throw new AppError('User not found', 404);
+            throw new AppError("User not found", 404);
 
         return userRepository.delete(userId);
     }
+
+    async changeUserPassword(userId, oldPassword, newPassword) {
+        const user = await userRepository.findById(userId);
+
+        if (!user)
+            throw new AppError("User not found", 404);
+
+        const passwordMatch = await bcrypt.compare(
+            oldPassword,
+            user.passwordHash
+        );
+
+        if (!passwordMatch){
+            throw new AppError("Current password is incorrect", 401)
+        }
+
+        const isSamePassword = await bcrypt.compare(
+            newPassword,
+            user.passwordHash
+        );
+
+        if (isSamePassword){
+            throw new AppError("New password must be different from the current one", 400)
+        }
+
+        const newPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+        return userRepository.update(userId, {
+            passwordHash: newPasswordHash
+        })
+    }
+
+    async forgotPassword(email) {
+        const user = await userRepository.findByEmail(email);
+        if (!user)
+            throw new AppError("User not found", 404);
+
+        const token = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 60000 * 15); // 15 min
+
+        return await userRepository.update(user.id, {
+            resetToken: token,
+            resetTokenExpires: expiresAt
+        });
+
+        //return { token };
+    }
+
+    async resetPassword(token, newPassword){
+        const user = await userRepository.findByResetToken(token);
+
+        if (!user)
+            throw new AppError("Invalid or expired Token", 400);
+
+        const newPasswordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+        return userRepository.update(user.id, {
+            passwordHash: newPasswordHash
+        })
+    }
+
 }
 
 module.exports = new UserService();

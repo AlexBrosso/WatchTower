@@ -16,10 +16,27 @@ const updateUserBody = Joi.object({
     imageUrl: Joi.string().uri().allow(null)
 }).min(1);
 
+const changePasswordBody = Joi.object({
+    oldPassword: Joi.string().required(),
+    newPassword: Joi.string().min(8).max(64).required()
+})
+
+const forgotPasswordBody = Joi.object({
+    email: Joi.string().email().required()
+})
+
+const resetPasswordBody = Joi.object({
+    token: Joi.string().required(),
+    newPassword: Joi.string().min(8).max(64).required()
+})
+
 module.exports = {
     userIdParam,
     createUserBody,
-    updateUserBody 
+    updateUserBody,
+    changePasswordBody,
+    forgotPasswordBody,
+    resetPasswordBody
 };
 
 

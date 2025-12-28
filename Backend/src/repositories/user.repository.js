@@ -28,6 +28,17 @@ class UserRepository {
         })
     }
 
+    async findByResetToken(token){
+        return prisma.user.findFirst({
+            where: {
+                resetToken: token,
+                resetTokenExpires: {
+                    gt: new Date()
+                }
+            }
+        })
+    }
+
     async update(id, data) {
         return prisma.user.update({
             where: { id },

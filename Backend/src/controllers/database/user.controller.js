@@ -46,6 +46,51 @@ class UserController {
             next(err);
         }
     }
+
+    async changePassword(req, res, next) {
+        try {
+            const userId = req.params.id;
+            const { oldPassword, newPassword } = req.body;
+
+            await userService.changeUserPassword(
+                req.params.id,
+                oldPassword,
+                newPassword
+            );
+
+            return res.status(204).send();
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async forgotPassword(req, res, next) {
+        try {
+            console.log(req.body)
+            const { email } = req.body;
+
+            const result = await userService.forgotPassword(email);
+
+            res.status(200).json({
+                token: result?.token 
+            });
+
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async resetPassword(req, res, next) {
+        try {
+            const { token, newPassword } = req.body;
+
+            await userService.resetPassword(token, newPassword);
+
+            return res.status(204).send();
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = new UserController();
