@@ -20,6 +20,15 @@ class UserController {
         }
     }
 
+    async me(req, res, next){
+        try{
+            const user = await userService.getUser(req.user.id);
+            return res.status(200).json(user);
+        }catch(err){
+            next(err);
+        }
+    }
+
     async get(req, res, next){
         try{
             const user = await userService.getUser(req.params.id);
@@ -29,10 +38,19 @@ class UserController {
         }
     }
 
-    async update(req, res, next) {
+    async updateMe(req, res, next) {
         try {
-            const user = await userService.updateUser(req.params.id, req.body);
+            const user = await userService.updateUser(req.user.id, req.body);
             return res.status(200).json(user);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async removeMe(req, res, next) {
+        try {
+            await userService.deleteUser(req.user.id);
+            return res.status(204).send();
         } catch (err) {
             next(err);
         }
@@ -40,6 +58,7 @@ class UserController {
 
     async remove(req, res, next) {
         try {
+            console.log(req.params);
             await userService.deleteUser(req.params.id);
             return res.status(204).send();
         } catch (err) {
@@ -47,13 +66,13 @@ class UserController {
         }
     }
 
-    async changePassword(req, res, next) {
+    async changeMyPassword(req, res, next) {
         try {
-            const userId = req.params.id;
+            const userId = req.user.id;
             const { oldPassword, newPassword } = req.body;
 
             await userService.changeUserPassword(
-                req.params.id,
+                req.user.id,
                 oldPassword,
                 newPassword
             );

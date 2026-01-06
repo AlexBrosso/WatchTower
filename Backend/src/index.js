@@ -6,6 +6,7 @@ const { createRedisClient } = require("./services/redisClient");
 const moviesRoutes = require("./routes/movie.route");
 const genresRoutes = require("./routes/genre.route");
 const usersRoutes = require("./routes/database/user.route");
+const authRoutes = require("./routes/database/auth.route");
 const errorMiddleware = require('./middlewares/error.middleware');
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/movies", moviesRoutes);
 app.use("/api/genres", genresRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);
 

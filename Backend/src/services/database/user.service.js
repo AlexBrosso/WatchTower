@@ -111,8 +111,6 @@ class UserService {
             resetToken: token,
             resetTokenExpires: expiresAt
         });
-
-        //return { token };
     }
 
     async resetPassword(token, newPassword){
