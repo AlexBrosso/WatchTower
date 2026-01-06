@@ -17,13 +17,13 @@ async function authMiddleware(req, res, next) {
 
         const isBlackListed = await getCache(`bl:${token}`);
         if(isBlackListed)
-            throw new AppError("Token has been revoked", 401);
+            throw new AppError("Token has been revoked.", 401);
 
         const decoded = verifyToken(token);
         const user = await userRepository.findById(Number(decoded.sub));
 
         if(!user)
-            throw new AppError("User not found.", 401);
+            throw new AppError("Invalid Authentication Creditentials.", 401);
 
         req.user = {
             id: user.id,

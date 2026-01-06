@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const AppError = require("../../utils/AppError");
 const userRepository = require("../../repositories/user.repository");
-const { generateToken } = require("../../utils/jwt");
+const { generateToken, generateRefreshToken } = require("../../utils/jwt");
+const { setCache } = require("../../lib/cache");
 
 class AuthService {
     async login({ email, password }) {
@@ -25,8 +26,19 @@ class AuthService {
             role: user.role
         });
 
+        const refreshToken = generateRefreshToken({
+            sub: user.id
+        });
+
+        await setCache(
+            `rt:${refreshToken}`,
+            user.id,
+            60 * 60 * 24
+        )
+
         return {
             acessToken: token,
+            refreshToken: refreshToken,
             user: {
                 id: user.id,
                 email: user.email,

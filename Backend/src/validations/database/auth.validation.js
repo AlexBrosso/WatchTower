@@ -5,6 +5,11 @@ const loginBody = Joi.object({
     password: Joi.string().min(8).max(64).required()
 });
 
+const refreshBody = Joi.object({
+    refreshToken: Joi.string().required()
+})
+
 module.exports = {
-    loginBody
+    loginBody,
+    refreshBody
 }
